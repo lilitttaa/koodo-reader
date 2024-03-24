@@ -20,17 +20,17 @@ class SyncFileAPI {
 
   public setItem (key: string, value: any): void {
     this.ensurePathExists(this.dataFile)
-	const data = fs.readFileSync(this.dataFile, 'utf8')
-	const jsonData = data ? JSON.parse(data) : {}
-	jsonData[key] = value
-	fs.writeFileSync(this.dataFile, JSON.stringify(jsonData, null, 2), 'utf8')
+    const data = fs.readFileSync(this.dataFile, 'utf8')
+    const jsonData = data ? JSON.parse(data) : {}
+    jsonData[key] = value
+    fs.writeFileSync(this.dataFile, JSON.stringify(jsonData, null, 2), 'utf8')
   }
 
   getItem (key: string): any {
     this.ensurePathExists(this.dataFile)
     const data = fs.readFileSync(this.dataFile, 'utf8')
     const jsonData = JSON.parse(data)
-    return jsonData[key] 
+    return jsonData[key]
   }
 
   removeItem (key: string): void {
@@ -59,9 +59,8 @@ class SyncFileAPI {
   }
 }
 
-export let gLocalStorage = new SyncFileAPI(
-  'C:/Users/96146/我的云端硬盘/KoodoReader/localStorage'
-)
-export let gLocalForage = new LocalFileAPI(
-  'C:/Users/96146/我的云端硬盘/KoodoReader/localForage'
-)
+const data = fs.readFileSync('userConfig.json', 'utf8')
+var userConfig = JSON.parse(data)
+export const storageLocation = userConfig.save_path
+export let gLocalStorage = new SyncFileAPI(storageLocation + path.sep + 'localStorage')
+export let gLocalForage = new LocalFileAPI(storageLocation + path.sep + 'localForage')

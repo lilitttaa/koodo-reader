@@ -3142,8 +3142,8 @@
         }
       }
 
-	  let fs = window.require('fs')
-		let path = window.require('path')
+	let fs = window.require('fs')
+	let path = window.require('path')
 
 	  class SyncFileAPI {
 		constructor(dataPath) {
@@ -3191,10 +3191,16 @@
 		}
 	}
 }
-let gLocalStorage = new SyncFileAPI(
-	'C:/Users/96146/我的云端硬盘/KoodoReader/localStorage'
-  );
-exports.gLocalStorage = gLocalStorage;
+
+	const data = fs.readFileSync("userConfig.json", "utf8");
+	var userConfig = JSON.parse(data);
+	var storageLocation = userConfig.save_path;
+	let gLocalStorage = new SyncFileAPI(
+		storageLocation + path.sep + "localStorage"
+	);
+	exports.gLocalStorage = gLocalStorage;
+
+
       let webViewerOpenFileViaURL;
       {
         webViewerOpenFileViaURL = function (file) {
@@ -3203,7 +3209,7 @@ exports.gLocalStorage = gLocalStorage;
             var path = window.require("path");
             var filePath = gLocalStorage.getItem("pdfPath");
             var libPath = path.join(
-				gLocalStorage.getItem("storageLocation"),
+				storageLocation,
               `book`,
               file
             );

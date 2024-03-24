@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { Trans } from "react-i18next";
 import { checkStableUpdate } from "../../utils/commonUtil";
 import packageInfo from "../../../package.json";
-import { gLocalStorage } from '../../utils/fileUtils/fileAPIFactory';
+import { gLocalStorage, storageLocation } from '../../utils/fileUtils/fileAPIFactory';
 
 class Header extends React.Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
@@ -47,7 +47,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
       if (
         StorageUtil.getReaderConfig("storageLocation") &&
-        !gLocalStorage.getItem("storageLocation")
+        !storageLocation
       ) {
         gLocalStorage.setItem(
           "storageLocation",
@@ -65,13 +65,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         console.log(error);
       }
       //Check for data update
-      let storageLocation = gLocalStorage.getItem("storageLocation")
-        ? gLocalStorage.getItem("storageLocation")
+      let location = storageLocation
+        ? storageLocation
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
       let sourcePath = path.join(
-        storageLocation,
+        location,
         "config",
         "readerConfig.json"
       );
@@ -105,13 +105,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     const fs = window.require("fs");
     const path = window.require("path");
     const { zip } = window.require("zip-a-folder");
-    let storageLocation = gLocalStorage.getItem("storageLocation")
-      ? gLocalStorage.getItem("storageLocation")
+    let location = storageLocation
+      ? storageLocation
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
-    let sourcePath = path.join(storageLocation, "config");
-    let outPath = path.join(storageLocation, "config.zip");
+    let sourcePath = path.join(location, "config");
+    let outPath = path.join(location, "config.zip");
     await zip(sourcePath, outPath);
 
     var data = fs.readFileSync(outPath);
@@ -125,13 +125,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     if (result) {
       this.setState({ isdataChange: false });
       //Check for data update
-      let storageLocation = gLocalStorage.getItem("storageLocation")
-        ? gLocalStorage.getItem("storageLocation")
+      let location = storageLocation
+        ? storageLocation
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
       let sourcePath = path.join(
-        storageLocation,
+        location,
         "config",
         "readerConfig.json"
       );
@@ -164,12 +164,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }
     const fs = window.require("fs");
     const path = window.require("path");
-    let storageLocation = gLocalStorage.getItem("storageLocation")
-      ? gLocalStorage.getItem("storageLocation")
+    let location = storageLocation
+      ? storageLocation
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
-    let sourcePath = path.join(storageLocation, "config", "readerConfig.json");
+    let sourcePath = path.join(location, "config", "readerConfig.json");
     fs.readFile(sourcePath, "utf8", async (err, data) => {
       if (err || !data) {
         this.syncToLocation();

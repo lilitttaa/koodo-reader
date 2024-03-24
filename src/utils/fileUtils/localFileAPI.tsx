@@ -35,8 +35,7 @@ export default class LocalFileAPI implements FileAPIInterface {
   }
 
   getItem (
-    key: string,
-    callback?: (err: any, value: any) => void
+    key: string
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.ensurePathExists(this.dataFile)

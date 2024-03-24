@@ -20,7 +20,7 @@ import { themeList } from "../../../constants/themeList";
 import toast from "react-hot-toast";
 import { openExternalUrl } from "../../../utils/serviceUtils/urlUtil";
 import ManagerUtil from "../../../utils/fileUtils/managerUtil";
-import { gLocalStorage } from '../../../utils/fileUtils/fileAPIFactory';
+import { gLocalStorage, storageLocation } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class SettingDialog extends React.Component<
   SettingInfoProps,
@@ -59,8 +59,8 @@ class SettingDialog extends React.Component<
         name: StorageUtil.getReaderConfig("themeColor"),
       }),
       storageLocation: isElectron
-        ? gLocalStorage.getItem("storageLocation")
-          ? gLocalStorage.getItem("storageLocation")
+        ? storageLocation
+          ? storageLocation
           : window
               .require("electron")
               .ipcRenderer.sendSync("storage-location", "ping")
@@ -147,13 +147,13 @@ class SettingDialog extends React.Component<
     const fs = window.require("fs");
     const path = window.require("path");
     const { zip } = window.require("zip-a-folder");
-    let storageLocation = gLocalStorage.getItem("storageLocation")
-      ? gLocalStorage.getItem("storageLocation")
+    let location = storageLocation
+      ? storageLocation
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
-    let sourcePath = path.join(storageLocation, "config");
-    let outPath = path.join(storageLocation, "config.zip");
+    let sourcePath = path.join(location, "config");
+    let outPath = path.join(location, "config.zip");
     await zip(sourcePath, outPath);
 
     var data = fs.readFileSync(outPath);
@@ -178,8 +178,8 @@ class SettingDialog extends React.Component<
       return;
     }
     let result = await changePath(
-      gLocalStorage.getItem("storageLocation")
-        ? gLocalStorage.getItem("storageLocation")
+      storageLocation
+        ? storageLocation
         : ipcRenderer.sendSync("storage-location", "ping"),
       path.filePaths[0]
     );
@@ -197,7 +197,7 @@ class SettingDialog extends React.Component<
       "setting-dialog-location-title"
     )[0].innerHTML =
       path.filePaths[0] ||
-      gLocalStorage.getItem("storageLocation") ||
+      storageLocation ||
       ipcRenderer.sendSync("storage-location", "ping");
   };
 

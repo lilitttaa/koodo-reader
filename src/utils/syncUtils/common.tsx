@@ -4,7 +4,7 @@ import BookUtil from "../fileUtils/bookUtil";
 import NoteModel from "../../model/Note";
 import BookmarkModel from "../../model/Bookmark";
 import { isElectron } from "react-device-detect";
-import { gLocalForage, gLocalStorage } from '../fileUtils/fileAPIFactory';
+import { gLocalForage, gLocalStorage, storageLocation } from '../fileUtils/fileAPIFactory';
 declare var window: any;
 
 let configArr = [
@@ -54,8 +54,8 @@ export const moveData = (
 
   const { ipcRenderer } = window.require("electron");
   const dirPath = ipcRenderer.sendSync("user-data", "ping");
-  const dataPath = gLocalStorage.getItem("storageLocation")
-    ? gLocalStorage.getItem("storageLocation")
+  const dataPath = storageLocation
+    ? storageLocation
     : window
         .require("electron")
         .ipcRenderer.sendSync("storage-location", "ping");
@@ -129,8 +129,8 @@ export const syncData = (blob: Blob, books: BookModel[] = [], isSync: true) => {
     const fs = window.require("fs");
     const path = window.require("path");
     const AdmZip = window.require("adm-zip");
-    const dataPath = gLocalStorage.getItem("storageLocation")
-      ? gLocalStorage.getItem("storageLocation")
+    const dataPath = storageLocation
+      ? storageLocation
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");

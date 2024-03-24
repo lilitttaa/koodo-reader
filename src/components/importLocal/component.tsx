@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import StorageUtil from "../../utils/serviceUtils/storageUtil";
 
 import ShelfUtil from "../../utils/readUtils/shelfUtil";
-import { gLocalForage, gLocalStorage } from '../../utils/fileUtils/fileAPIFactory';
+import { gLocalForage, gLocalStorage, storageLocation } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 let clickFilePath = "";
 
@@ -31,7 +31,7 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
   componentDidMount() {
     if (isElectron) {
       const { ipcRenderer } = window.require("electron");
-      if (!gLocalStorage.getItem("storageLocation")) {
+      if (!storageLocation) {
         gLocalStorage.setItem(
           "storageLocation",
           ipcRenderer.sendSync("storage-location", "ping")

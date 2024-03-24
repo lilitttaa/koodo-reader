@@ -1,4 +1,4 @@
-import { gLocalStorage } from '../fileUtils/fileAPIFactory';
+import { gLocalStorage, storageLocation } from '../fileUtils/fileAPIFactory';
 import { unzipBook, unzipConfig } from "./common";
 
 export const restore = (file: File, isSync = false) => {
@@ -6,8 +6,8 @@ export const restore = (file: File, isSync = false) => {
     const fs = window.require("fs");
     const path = window.require("path");
     const AdmZip = window.require("adm-zip");
-    const dataPath = gLocalStorage.getItem("storageLocation")
-      ? gLocalStorage.getItem("storageLocation")
+    const dataPath = storageLocation
+      ? storageLocation
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");

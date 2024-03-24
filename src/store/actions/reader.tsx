@@ -1,88 +1,89 @@
-import NoteModel from "../../model/Note";
-import BookmarkModel from "../../model/Bookmark";
-import HtmlBookModel from "../../model/HtmlBook";
-import AddTrash from "../../utils/readUtils/addTrash";
-declare var window: any;
-export function handleNotes(notes: NoteModel[]) {
-  return { type: "HANDLE_NOTES", payload: notes };
+import NoteModel from '../../model/Note'
+import BookmarkModel from '../../model/Bookmark'
+import HtmlBookModel from '../../model/HtmlBook'
+import AddTrash from '../../utils/readUtils/addTrash'
+import { gLocalForage } from '../../utils/fileUtils/fileAPIFactory'
+declare var window: any
+export function handleNotes (notes: NoteModel[]) {
+  return { type: 'HANDLE_NOTES', payload: notes }
 }
-export function handleOriginalText(originalText: string) {
-  return { type: "HANDLE_ORIGINAL_TEXT", payload: originalText };
+export function handleOriginalText (originalText: string) {
+  return { type: 'HANDLE_ORIGINAL_TEXT', payload: originalText }
 }
-export function handleColor(color: number) {
-  return { type: "HANDLE_COLOR", payload: color };
+export function handleColor (color: number) {
+  return { type: 'HANDLE_COLOR', payload: color }
 }
-export function handleBookmarks(bookmarks: BookmarkModel[]) {
-  return { type: "HANDLE_BOOKMARKS", payload: bookmarks };
+export function handleBookmarks (bookmarks: BookmarkModel[]) {
+  return { type: 'HANDLE_BOOKMARKS', payload: bookmarks }
 }
-export function handleDigests(digests: NoteModel[]) {
-  return { type: "HANDLE_DIGESTS", payload: digests };
+export function handleDigests (digests: NoteModel[]) {
+  return { type: 'HANDLE_DIGESTS', payload: digests }
 }
-export function handleHtmlBook(htmlBook: HtmlBookModel) {
-  return { type: "HANDLE_HTML_BOOK", payload: htmlBook };
+export function handleHtmlBook (htmlBook: HtmlBookModel) {
+  return { type: 'HANDLE_HTML_BOOK', payload: htmlBook }
 }
-export function handleCurrentChapter(currentChapter: string) {
-  return { type: "HANDLE_CURRENT_CHAPTER", payload: currentChapter };
+export function handleCurrentChapter (currentChapter: string) {
+  return { type: 'HANDLE_CURRENT_CHAPTER', payload: currentChapter }
 }
-export function handleCurrentChapterIndex(currentChapterIndex: number) {
-  return { type: "HANDLE_CURRENT_CHAPTER_INDEX", payload: currentChapterIndex };
+export function handleCurrentChapterIndex (currentChapterIndex: number) {
+  return { type: 'HANDLE_CURRENT_CHAPTER_INDEX', payload: currentChapterIndex }
 }
-export function handleChapters(chapters: any) {
-  return { type: "HANDLE_CHAPTERS", payload: chapters };
+export function handleChapters (chapters: any) {
+  return { type: 'HANDLE_CHAPTERS', payload: chapters }
 }
-export function handleNoteKey(key: string) {
-  return { type: "HANDLE_NOTE_KEY", payload: key };
+export function handleNoteKey (key: string) {
+  return { type: 'HANDLE_NOTE_KEY', payload: key }
 }
-export function handleFetchNotes() {
+export function handleFetchNotes () {
   return (dispatch: (arg0: { type: string; payload: NoteModel[] }) => void) => {
-    window.localforage.getItem("notes", (err, value) => {
-      let noteArr: any;
+    gLocalForage.getItem('notes').then(value => {
+      let noteArr: any
       if (value === null || value === []) {
-        noteArr = [];
+        noteArr = []
       } else {
-        noteArr = value;
+        noteArr = value
       }
-      let keyArr = AddTrash.getAllTrash();
-      dispatch(handleNotes(handleKeyRemove(noteArr, keyArr)));
+      let keyArr = AddTrash.getAllTrash()
+      dispatch(handleNotes(handleKeyRemove(noteArr, keyArr)))
       dispatch(
         handleDigests(
           handleKeyRemove(
             noteArr.filter((item: NoteModel) => {
-              return item.notes === "";
+              return item.notes === ''
             }),
             keyArr
           )
         )
-      );
-    });
-  };
+      )
+    })
+  }
 }
 
-export function handleFetchBookmarks() {
+export function handleFetchBookmarks () {
   return (
     dispatch: (arg0: { type: string; payload: BookmarkModel[] }) => void
   ) => {
-    window.localforage.getItem("bookmarks", (err, value) => {
-      let bookmarkArr: any;
+    gLocalForage.getItem('bookmarks').then(value => {
+      let bookmarkArr: any
       if (value === null || value === []) {
-        bookmarkArr = [];
+        bookmarkArr = []
       } else {
-        bookmarkArr = value;
+        bookmarkArr = value
       }
-      let keyArr = AddTrash.getAllTrash();
-      dispatch(handleBookmarks(handleKeyRemove(bookmarkArr, keyArr)));
-    });
-  };
+      let keyArr = AddTrash.getAllTrash()
+      dispatch(handleBookmarks(handleKeyRemove(bookmarkArr, keyArr)))
+    })
+  }
 }
 const handleKeyRemove = (items: any[], arr: string[]) => {
-  let itemArr: any[] = [];
+  let itemArr: any[] = []
   if (!arr[0]) {
-    return items;
+    return items
   }
   for (let i = 0; i < items.length; i++) {
     if (arr.indexOf(items[i].bookKey) === -1) {
-      itemArr.push(items[i]);
+      itemArr.push(items[i])
     }
   }
-  return itemArr;
-};
+  return itemArr
+}

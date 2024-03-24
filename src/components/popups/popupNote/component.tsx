@@ -34,6 +34,7 @@ class PopupNote extends React.Component<PopupNoteProps, PopupNoteState> {
       let noteIndex = window._.findLastIndex(this.props.notes, {
         key: this.props.noteKey,
       });
+	  console.log("notes", this.props.notes, "noteIndex", noteIndex, "this.props.noteKey", this.props.noteKey);
       this.setState({
         text: this.props.notes[noteIndex].text,
       });

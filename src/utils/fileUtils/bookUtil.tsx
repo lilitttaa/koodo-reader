@@ -7,7 +7,7 @@ import { getPDFMetadata } from "./pdfUtil";
 import { copyArrayBuffer } from "../commonUtil";
 import iconv from "iconv-lite";
 import { Buffer } from "buffer";
-import { gLocalForage, gLocalStorage } from './fileAPIFactory';
+import { gLocalForage, gLocalStorage, storageLocation } from './fileAPIFactory';
 declare var window: any;
 
 class BookUtil {
@@ -15,8 +15,8 @@ class BookUtil {
     if (isElectron) {
       const fs = window.require("fs");
       const path = window.require("path");
-      const dataPath = gLocalStorage.getItem("storageLocation")
-        ? gLocalStorage.getItem("storageLocation")
+      const dataPath = storageLocation
+        ? storageLocation
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
@@ -51,8 +51,8 @@ class BookUtil {
     if (isElectron) {
       const fs_extra = window.require("fs-extra");
       const path = window.require("path");
-      const dataPath = gLocalStorage.getItem("storageLocation")
-        ? gLocalStorage.getItem("storageLocation")
+      const dataPath = storageLocation
+        ? storageLocation
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
@@ -76,8 +76,8 @@ class BookUtil {
         var fs = window.require("fs");
         var path = window.require("path");
         let _bookPath = path.join(
-          gLocalStorage.getItem("storageLocation")
-            ? gLocalStorage.getItem("storageLocation")
+          storageLocation
+            ? storageLocation
             : window
                 .require("electron")
                 .ipcRenderer.sendSync("storage-location", "ping"),
@@ -117,8 +117,8 @@ class BookUtil {
         var fs = window.require("fs");
         var path = window.require("path");
         let _bookPath = path.join(
-          gLocalStorage.getItem("storageLocation")
-            ? gLocalStorage.getItem("storageLocation")
+          storageLocation
+            ? storageLocation
             : window
                 .require("electron")
                 .ipcRenderer.sendSync("storage-location", "ping"),
