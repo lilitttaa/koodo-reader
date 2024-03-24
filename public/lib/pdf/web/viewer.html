@@ -872,13 +872,13 @@ See https://github.com/adobe-type-tools/cmap-resources
       console.log(document.URL);
       var setReaderConfig = (key, value) => {
         let readerConfig =
-          JSON.parse(localStorage.getItem("readerConfig")) || {};
+          JSON.parse(gLocalStorage.getItem("readerConfig")) || {};
         readerConfig[key] = value;
-        localStorage.setItem("readerConfig", JSON.stringify(readerConfig));
+        gLocalStorage.setItem("readerConfig", JSON.stringify(readerConfig));
       };
       var getReaderConfig = (key) => {
         let readerConfig =
-          JSON.parse(localStorage.getItem("readerConfig")) || {};
+          JSON.parse(gLocalStorage.getItem("readerConfig")) || {};
         return readerConfig[key];
       };
     </script>

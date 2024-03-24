@@ -3142,15 +3142,68 @@
         }
       }
 
+	  let fs = window.require('fs')
+		let path = window.require('path')
+
+	  class SyncFileAPI {
+		constructor(dataPath) {
+		this.dataPath = dataPath;
+		this.dataFile = path.join(dataPath, 'data.json');
+	}
+
+	setItem(key, value) {
+		this.ensurePathExists(this.dataFile);
+		let data = fs.readFileSync(this.dataFile, 'utf8');
+		let jsonData = data ? JSON.parse(data) : {};
+		jsonData[key] = value;
+		fs.writeFileSync(this.dataFile, JSON.stringify(jsonData, null, 2), 'utf8');
+	}
+
+	getItem(key) {
+		this.ensurePathExists(this.dataFile);
+		const data = fs.readFileSync(this.dataFile, 'utf8');
+		const jsonData = JSON.parse(data);
+		return jsonData[key];
+	}
+
+	removeItem(key) {
+		this.ensurePathExists(this.dataFile);
+		const data = fs.readFileSync(this.dataFile, 'utf8');
+		const jsonData = JSON.parse(data);
+		delete jsonData[key];
+		fs.writeFileSync(this.dataFile, JSON.stringify(jsonData), 'utf8');
+	}
+
+	clear() {
+		this.ensurePathExists(this.dataFile);
+		fs.writeFileSync(this.dataFile, '{}', 'utf8');
+	}
+
+	ensurePathExists(filePath) {
+		const directory = path.dirname(filePath);
+	
+		if (!fs.existsSync(directory)) {
+			fs.mkdirSync(directory, { recursive: true });
+		}
+	
+		if (!fs.existsSync(filePath)) {
+			fs.writeFileSync(filePath, '{}', 'utf8');
+		}
+	}
+}
+let gLocalStorage = new SyncFileAPI(
+	'C:/Users/96146/我的云端硬盘/KoodoReader/localStorage'
+  );
+exports.gLocalStorage = gLocalStorage;
       let webViewerOpenFileViaURL;
       {
         webViewerOpenFileViaURL = function (file) {
           if (window.require) {
             var fs = window.require("fs");
             var path = window.require("path");
-            var filePath = localStorage.getItem("pdfPath");
+            var filePath = gLocalStorage.getItem("pdfPath");
             var libPath = path.join(
-              localStorage.getItem("storageLocation"),
+				gLocalStorage.getItem("storageLocation"),
               `book`,
               file
             );
@@ -3160,7 +3213,7 @@
             } else if (fs.existsSync(libPath)) {
               data = fs.readFileSync(libPath);
             }
-            localStorage.setItem("pdfPath", "");
+            gLocalStorage.setItem("pdfPath", "");
             PDFViewerApplication.open(new Uint8Array(data).buffer);
           } else {
             (localforage || gLocalForage)
@@ -14811,11 +14864,11 @@
 
         async _writeToStorage() {
           const databaseStr = JSON.stringify(this.database);
-          localStorage.setItem("pdfjs.history", databaseStr);
+          gLocalStorage.setItem("pdfjs.history", databaseStr);
         }
 
         async _readFromStorage() {
-          return localStorage.getItem("pdfjs.history");
+          return gLocalStorage.getItem("pdfjs.history");
         }
 
         async set(name, val) {
@@ -14879,11 +14932,11 @@
 
       class GenericPreferences extends _preferences.BasePreferences {
         async _writeToStorage(prefObj) {
-          localStorage.setItem("pdfjs.preferences", JSON.stringify(prefObj));
+			gLocalStorage.setItem("pdfjs.preferences", JSON.stringify(prefObj));
         }
 
         async _readFromStorage(prefObj) {
-          return JSON.parse(localStorage.getItem("pdfjs.preferences"));
+          return JSON.parse(gLocalStorage.getItem("pdfjs.preferences"));
         }
       }
 
