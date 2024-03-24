@@ -7,6 +7,7 @@ import { getPDFMetadata } from "./pdfUtil";
 import { copyArrayBuffer } from "../commonUtil";
 import iconv from "iconv-lite";
 import { Buffer } from "buffer";
+import { gLocalForage, gLocalStorage } from './fileAPIFactory';
 declare var window: any;
 
 class BookUtil {
@@ -14,8 +15,8 @@ class BookUtil {
     if (isElectron) {
       const fs = window.require("fs");
       const path = window.require("path");
-      const dataPath = localStorage.getItem("storageLocation")
-        ? localStorage.getItem("storageLocation")
+      const dataPath = gLocalStorage.getItem("storageLocation")
+        ? gLocalStorage.getItem("storageLocation")
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
@@ -43,15 +44,15 @@ class BookUtil {
         };
       });
     } else {
-      return window.localforage.setItem(key, buffer);
+      return gLocalForage.setItem(key, buffer);
     }
   }
   static deleteBook(key: string) {
     if (isElectron) {
       const fs_extra = window.require("fs-extra");
       const path = window.require("path");
-      const dataPath = localStorage.getItem("storageLocation")
-        ? localStorage.getItem("storageLocation")
+      const dataPath = gLocalStorage.getItem("storageLocation")
+        ? gLocalStorage.getItem("storageLocation")
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
@@ -66,7 +67,7 @@ class BookUtil {
         }
       });
     } else {
-      return window.localforage.removeItem(key);
+      return gLocalForage.removeItem(key);
     }
   }
   static isBookExist(key: string, bookPath: string = "") {
@@ -75,8 +76,8 @@ class BookUtil {
         var fs = window.require("fs");
         var path = window.require("path");
         let _bookPath = path.join(
-          localStorage.getItem("storageLocation")
-            ? localStorage.getItem("storageLocation")
+          gLocalStorage.getItem("storageLocation")
+            ? gLocalStorage.getItem("storageLocation")
             : window
                 .require("electron")
                 .ipcRenderer.sendSync("storage-location", "ping"),
@@ -95,7 +96,7 @@ class BookUtil {
           resolve(false);
         }
       } else {
-        window.localforage.getItem(key).then((result) => {
+        gLocalForage.getItem(key).then((result) => {
           if (result) {
             resolve(true);
           } else {
@@ -110,13 +111,14 @@ class BookUtil {
     isArrayBuffer: boolean = false,
     bookPath: string = ""
   ) {
+	console.trace("fetchBook",key,isArrayBuffer,bookPath)
     if (isElectron) {
       return new Promise<File | ArrayBuffer | boolean>((resolve, reject) => {
         var fs = window.require("fs");
         var path = window.require("path");
         let _bookPath = path.join(
-          localStorage.getItem("storageLocation")
-            ? localStorage.getItem("storageLocation")
+          gLocalStorage.getItem("storageLocation")
+            ? gLocalStorage.getItem("storageLocation")
             : window
                 .require("electron")
                 .ipcRenderer.sendSync("storage-location", "ping"),
@@ -144,7 +146,7 @@ class BookUtil {
         }
       });
     } else {
-      return window.localforage.getItem(key);
+      return gLocalForage.getItem(key);
     }
   }
   static FetchAllBooks(Books: BookModel[]) {
@@ -172,17 +174,19 @@ class BookUtil {
         });
       } else {
         const { ipcRenderer } = window.require("electron");
-        ipcRenderer.invoke("open-book", {
-          url: `${window.location.href.split("#")[0]}#/${ref}/${
-            book.key
-          }?title=${book.name}&file=${book.key}`,
-          isMergeWord:
-            book.format === "PDF"
-              ? "no"
-              : StorageUtil.getReaderConfig("isMergeWord"),
-          isAutoFullscreen: StorageUtil.getReaderConfig("isAutoFullscreen"),
-          isPreventSleep: StorageUtil.getReaderConfig("isPreventSleep"),
-        });
+		let data = {
+			url: `${window.location.href.split("#")[0]}#/${ref}/${
+			  book.key
+			}?title=${book.name}&file=${book.key}`,
+			isMergeWord:
+			  book.format === "PDF"
+				? "no"
+				: StorageUtil.getReaderConfig("isMergeWord"),
+			isAutoFullscreen: StorageUtil.getReaderConfig("isAutoFullscreen"),
+			isPreventSleep: StorageUtil.getReaderConfig("isPreventSleep"),
+		  }
+		console.log("data",data.url)
+        ipcRenderer.invoke("open-book", data);
       }
     } else {
       window.open(
@@ -200,7 +204,7 @@ class BookUtil {
     if (isElectron) {
       const path = window.require("path");
       const { ipcRenderer } = window.require("electron");
-      localStorage.setItem("pdfPath", book.path);
+      gLocalStorage.setItem("pdfPath", book.path);
       const __dirname = ipcRenderer.sendSync("get-dirname", "ping");
       let pdfLocation =
         document.URL.indexOf("localhost") > -1

@@ -16,6 +16,7 @@ import { isElectron } from "react-device-detect";
 import SelectBook from "../../../components/selectBook";
 import { Trans } from "react-i18next";
 import DeletePopup from "../../../components/dialogs/deletePopup";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 
 declare var window: any;
 class BookList extends React.Component<BookListProps, BookListState> {
@@ -196,7 +197,7 @@ class BookList extends React.Component<BookListProps, BookListState> {
     }
     if (isElectron) {
       //兼容之前的版本
-      window.localforage.getItem(this.props.books[0].key).then((result) => {
+      gLocalForage.getItem(this.props.books[0].key).then((result) => {
         if (result) {
           backup(
             this.props.books,

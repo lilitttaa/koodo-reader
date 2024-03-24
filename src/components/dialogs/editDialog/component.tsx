@@ -4,6 +4,7 @@ import "./editDialog.css";
 import { Trans } from "react-i18next";
 import { EditDialogProps, EditDialogState } from "./interface";
 import toast from "react-hot-toast";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class EditDialog extends React.Component<EditDialogProps, EditDialogState> {
   constructor(props: EditDialogProps) {
@@ -41,7 +42,7 @@ class EditDialog extends React.Component<EditDialogProps, EditDialogState> {
         return false;
       }
     });
-    window.localforage.setItem("books", books).then(() => {
+    gLocalForage.setItem("books", books).then(() => {
       this.props.handleEditDialog(false);
       this.props.handleFetchBooks();
     });

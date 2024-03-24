@@ -1,5 +1,6 @@
 import BookModel from "../../model/Book";
 import NoteModel from "../../model/Note";
+import { gLocalStorage } from '../fileUtils/fileAPIFactory';
 import ReadingTime from "./readingTime";
 import RecordLocation from "./recordLocation";
 import RecordRecent from "./recordRecent";
@@ -209,34 +210,34 @@ class SortUtil {
   }
   static setBookSortCode(sortCode: number, orderCode: number) {
     let json =
-      localStorage.getItem("bookSortCode") ||
+      gLocalStorage.getItem("bookSortCode") ||
       JSON.stringify({ sort: 1, order: 2 });
     let obj = json ? JSON.parse(json) : { sort: 1, order: 2 };
     obj.sort = sortCode;
     obj.order = orderCode;
-    localStorage.setItem("bookSortCode", JSON.stringify(obj));
+    gLocalStorage.setItem("bookSortCode", JSON.stringify(obj));
   }
 
   static getBookSortCode() {
     let json =
-      localStorage.getItem("bookSortCode") ||
+      gLocalStorage.getItem("bookSortCode") ||
       JSON.stringify({ sort: 1, order: 2 });
     let obj = JSON.parse(json) || { sort: 1, order: 2 };
     return obj || null;
   }
   static setNoteSortCode(sort: number, order: number) {
     let json =
-      localStorage.getItem("noteSortCode") ||
+      gLocalStorage.getItem("noteSortCode") ||
       JSON.stringify({ sort: 2, order: 2 });
     let obj = json ? JSON.parse(json) : { sort: 2, order: 2 };
     obj.sort = sort;
     obj.order = order;
-    localStorage.setItem("noteSortCode", JSON.stringify(obj));
+    gLocalStorage.setItem("noteSortCode", JSON.stringify(obj));
   }
 
   static getNoteSortCode() {
     let json =
-      localStorage.getItem("noteSortCode") ||
+      gLocalStorage.getItem("noteSortCode") ||
       JSON.stringify({ sort: 2, order: 2 });
     let obj = JSON.parse(json) || { sort: 2, order: 2 };
     return obj || null;

@@ -1,9 +1,11 @@
+import { gLocalStorage } from '../fileUtils/fileAPIFactory';
+
 class TagUtil {
   static setTags(tagName: string) {
     let tagArr =
-      localStorage.getItem("noteTags") !== "{}" &&
-      localStorage.getItem("noteTags")
-        ? JSON.parse(localStorage.getItem("noteTags") || "")
+      gLocalStorage.getItem("noteTags") !== "{}" &&
+      gLocalStorage.getItem("noteTags")
+        ? JSON.parse(gLocalStorage.getItem("noteTags") || "")
         : [];
     const index = tagArr.indexOf(tagName);
     if (index > -1) {
@@ -13,26 +15,26 @@ class TagUtil {
       tagArr.unshift(tagName);
     }
 
-    localStorage.setItem("noteTags", JSON.stringify(tagArr));
+    gLocalStorage.setItem("noteTags", JSON.stringify(tagArr));
   }
 
   static clear(tagName: string) {
     let tagArr =
-      localStorage.getItem("noteTags") !== "{}" &&
-      localStorage.getItem("noteTags")
-        ? JSON.parse(localStorage.getItem("noteTags") || "")
+      gLocalStorage.getItem("noteTags") !== "{}" &&
+      gLocalStorage.getItem("noteTags")
+        ? JSON.parse(gLocalStorage.getItem("noteTags") || "")
         : [];
     const index = tagArr.indexOf(tagName);
     if (index > -1) {
       tagArr.splice(index, 1);
     }
-    localStorage.setItem("noteTags", JSON.stringify(tagArr));
+    gLocalStorage.setItem("noteTags", JSON.stringify(tagArr));
   }
   static getAllTags() {
     let tagArr =
-      localStorage.getItem("noteTags") !== "{}" &&
-      localStorage.getItem("noteTags")
-        ? JSON.parse(localStorage.getItem("noteTags") || "")
+      gLocalStorage.getItem("noteTags") !== "{}" &&
+      gLocalStorage.getItem("noteTags")
+        ? JSON.parse(gLocalStorage.getItem("noteTags") || "")
         : [];
     return tagArr || [];
   }

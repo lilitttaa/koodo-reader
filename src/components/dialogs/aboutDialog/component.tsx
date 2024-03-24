@@ -12,6 +12,7 @@ import {
 } from "../../../utils/syncUtils/exportUtil";
 import "./aboutDialog.css";
 import StorageUtil from "../../../utils/serviceUtils/storageUtil";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 
 declare var window: any;
 class AboutDialog extends React.Component<AboutDialogProps, AboutDialogState> {
@@ -233,7 +234,7 @@ class AboutDialog extends React.Component<AboutDialogProps, AboutDialogState> {
             className="sort-by-category-list"
             onClick={async () => {
               let dictHistory =
-                (await window.localforage.getItem("words")) || [];
+                (await gLocalForage.getItem("words")) || [];
               if (dictHistory.length > 0) {
                 exportDictionaryHistory(dictHistory, [
                   ...this.props.books,

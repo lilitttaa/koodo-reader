@@ -4,6 +4,7 @@ import BookUtil from "../fileUtils/bookUtil";
 import NoteModel from "../../model/Note";
 import BookmarkModel from "../../model/Bookmark";
 import { isElectron } from "react-device-detect";
+import { gLocalForage, gLocalStorage } from '../fileUtils/fileAPIFactory';
 declare var window: any;
 
 let configArr = [
@@ -53,8 +54,8 @@ export const moveData = (
 
   const { ipcRenderer } = window.require("electron");
   const dirPath = ipcRenderer.sendSync("user-data", "ping");
-  const dataPath = localStorage.getItem("storageLocation")
-    ? localStorage.getItem("storageLocation")
+  const dataPath = gLocalStorage.getItem("storageLocation")
+    ? gLocalStorage.getItem("storageLocation")
     : window
         .require("electron")
         .ipcRenderer.sendSync("storage-location", "ping");
@@ -81,7 +82,7 @@ export const moveData = (
     );
     if (driveIndex === 4) {
       let deleteBooks = books.map((item) => {
-        return window.localforage.removeItem(item.key);
+        return gLocalForage.removeItem(item.key);
       });
       await Promise.all(deleteBooks);
     }
@@ -103,7 +104,7 @@ export const changePath = (oldPath: string, newPath: string) => {
           }
         });
         if (isConfiged) {
-          localStorage.setItem("storageLocation", newPath);
+          gLocalStorage.setItem("storageLocation", newPath);
           resolve(1);
         } else {
           fs.copy(oldPath, newPath, function (err) {
@@ -128,8 +129,8 @@ export const syncData = (blob: Blob, books: BookModel[] = [], isSync: true) => {
     const fs = window.require("fs");
     const path = window.require("path");
     const AdmZip = window.require("adm-zip");
-    const dataPath = localStorage.getItem("storageLocation")
-      ? localStorage.getItem("storageLocation")
+    const dataPath = gLocalStorage.getItem("storageLocation")
+      ? gLocalStorage.getItem("storageLocation")
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
@@ -149,7 +150,7 @@ export const syncData = (blob: Blob, books: BookModel[] = [], isSync: true) => {
 
       if (!isSync) {
         let deleteBooks = books.map((item) => {
-          return window.localforage.removeItem(item.key);
+          return gLocalForage.removeItem(item.key);
         });
         await Promise.all(deleteBooks);
         resolve(true);
@@ -168,7 +169,7 @@ export const zipBook = (zip: any, books: BookModel[]) => {
       books.forEach((item) => {
         data.push(
           !isElectron
-            ? window.localforage.getItem(item.key)
+            ? gLocalForage.getItem(item.key)
             : BookUtil.fetchBook(item.key, false, item.path)
         );
       });
@@ -194,14 +195,14 @@ export const unzipConfig = (zipEntries: any) => {
           zipEntry.name === "books.json" ||
           zipEntry.name === "bookmarks.json"
         ) {
-          window.localforage.setItem(
+          gLocalForage.setItem(
             zipEntry.name.split(".")[0],
             JSON.parse(text)
           );
         } else if (zipEntry.name === "pdfjs.history.json") {
-          localStorage.setItem("pdfjs.history", text);
+          gLocalStorage.setItem("pdfjs.history", text);
         } else {
-          localStorage.setItem(zipEntry.name.split(".")[0], text);
+          gLocalStorage.setItem(zipEntry.name.split(".")[0], text);
         }
       }
     });
@@ -219,7 +220,7 @@ const toArrayBuffer = (buf) => {
 };
 export const unzipBook = (zipEntries: any) => {
   return new Promise<boolean>((resolve, reject) => {
-    window.localforage.getItem("books").then((value: any) => {
+    gLocalForage.getItem("books").then((value: any) => {
       let count = 0;
       value &&
         value.length > 0 &&
@@ -253,28 +254,28 @@ export const zipConfig = (
         .file("notes.json", JSON.stringify(notes))
         .file("books.json", JSON.stringify(books))
         .file("bookmarks.json", JSON.stringify(bookmarks))
-        .file("readerConfig.json", localStorage.getItem("readerConfig") || "")
-        .file("themeColors.json", localStorage.getItem("themeColors") || "")
+        .file("readerConfig.json", gLocalStorage.getItem("readerConfig") || "")
+        .file("themeColors.json", gLocalStorage.getItem("themeColors") || "")
         .file(
           "bookSortCode.json",
-          localStorage.getItem("bookSortCode") ||
+          gLocalStorage.getItem("bookSortCode") ||
             JSON.stringify({ sort: 1, order: 2 })
         )
         .file(
           "noteSortCode.json",
-          localStorage.getItem("noteSortCode") ||
+          gLocalStorage.getItem("noteSortCode") ||
             JSON.stringify({ sort: 2, order: 2 })
         )
-        .file("readingTime.json", localStorage.getItem("readingTime") || "")
-        .file("recentBooks.json", localStorage.getItem("recentBooks") || [])
-        .file("deletedBooks.json", localStorage.getItem("deletedBooks") || [])
-        .file("favoriteBooks.json", localStorage.getItem("favoriteBooks") || [])
-        .file("shelfList.json", localStorage.getItem("shelfList") || [])
-        .file("noteTags.json", localStorage.getItem("noteTags") || [])
-        .file("pdfjs.history.json", localStorage.getItem("pdfjs.history") || [])
+        .file("readingTime.json", gLocalStorage.getItem("readingTime") || "")
+        .file("recentBooks.json", gLocalStorage.getItem("recentBooks") || [])
+        .file("deletedBooks.json", gLocalStorage.getItem("deletedBooks") || [])
+        .file("favoriteBooks.json", gLocalStorage.getItem("favoriteBooks") || [])
+        .file("shelfList.json", gLocalStorage.getItem("shelfList") || [])
+        .file("noteTags.json", gLocalStorage.getItem("noteTags") || [])
+        .file("pdfjs.history.json", gLocalStorage.getItem("pdfjs.history") || [])
         .file(
           "recordLocation.json",
-          localStorage.getItem("recordLocation") || ""
+          gLocalStorage.getItem("recordLocation") || ""
         );
       resolve(true);
     } catch (error) {

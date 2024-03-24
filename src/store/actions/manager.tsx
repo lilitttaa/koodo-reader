@@ -3,6 +3,7 @@ import SortUtil from "../../utils/readUtils/sortUtil";
 import BookModel from "../../model/Book";
 import { Dispatch } from "redux";
 import AddTrash from "../../utils/readUtils/addTrash";
+import { gLocalForage } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 export function handleBooks(books: BookModel[]) {
   return { type: "HANDLE_BOOKS", payload: books };
@@ -78,12 +79,12 @@ export function handleNoteSortCode(noteSortCode: {
 
 export function handleFetchBooks() {
   return (dispatch: Dispatch) => {
-    window.localforage.getItem("books", (err, value) => {
-      let bookArr: any = value;
+	gLocalForage.getItem("books").then((result) => {
+		let bookArr: any = result;
       let keyArr = AddTrash.getAllTrash();
       dispatch(handleDeletedBooks(handleKeyFilter(bookArr, keyArr)));
       dispatch(handleBooks(handleKeyRemove(bookArr, keyArr)));
-    });
+	});
   };
 }
 export function handleFetchBookSortCode() {

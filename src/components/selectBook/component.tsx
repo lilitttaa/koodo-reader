@@ -14,6 +14,7 @@ import {
 } from "../../utils/syncUtils/exportUtil";
 import BookUtil from "../../utils/fileUtils/bookUtil";
 import ShelfUtil from "../../utils/readUtils/shelfUtil";
+import { gLocalForage } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class SelectBook extends React.Component<BookListProps, BookListState> {
   constructor(props: BookListProps) {
@@ -212,7 +213,7 @@ class SelectBook extends React.Component<BookListProps, BookListState> {
                         this.props.selectedBooks.indexOf(item.key) > -1
                     );
                     let dictHistory =
-                      (await window.localforage.getItem("words")) || [];
+                      (await gLocalForage.getItem("words")) || [];
                     dictHistory = dictHistory.filter(
                       (item) =>
                         selectedBooks.filter(

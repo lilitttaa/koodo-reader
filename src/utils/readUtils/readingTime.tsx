@@ -1,26 +1,28 @@
+import { gLocalStorage } from '../fileUtils/fileAPIFactory';
+
 class ReadingTime {
   static setTime(bookKey: string, time: number) {
-    let json = localStorage.getItem("readingTime");
+    let json = gLocalStorage.getItem("readingTime");
     let obj = JSON.parse(json!) || {};
     obj[bookKey] = time;
-    localStorage.setItem("readingTime", JSON.stringify(obj));
+    gLocalStorage.setItem("readingTime", JSON.stringify(obj));
   }
 
   static getTime(bookKey: string) {
-    let json = localStorage.getItem("readingTime");
+    let json = gLocalStorage.getItem("readingTime");
     let obj = JSON.parse(json!) || {};
     return obj[bookKey] || 0;
   }
   static getAllTime() {
-    let json = localStorage.getItem("readingTime");
+    let json = gLocalStorage.getItem("readingTime");
     let obj = JSON.parse(json!) || {};
     return obj || [];
   }
   static clearTime(bookKey: string) {
-    let json = localStorage.getItem("readingTime");
+    let json = gLocalStorage.getItem("readingTime");
     let obj = JSON.parse(json!) || {};
     delete obj[bookKey];
-    localStorage.setItem("readingTime", JSON.stringify(obj));
+    gLocalStorage.setItem("readingTime", JSON.stringify(obj));
   }
 }
 

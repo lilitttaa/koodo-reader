@@ -12,6 +12,7 @@ import {
   exportNotes,
 } from "../../../utils/syncUtils/exportUtil";
 import AddFavorite from "../../../utils/readUtils/addFavorite";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class ActionDialog extends React.Component<
   ActionDialogProps,
@@ -342,7 +343,7 @@ class ActionDialog extends React.Component<
               style={{ paddingLeft: "0px" }}
               onClick={async () => {
                 let dictHistory =
-                  (await window.localforage.getItem("words")) || [];
+                  (await gLocalForage.getItem("words")) || [];
                 if (
                   dictHistory.filter(
                     (item) => item.bookKey === this.props.currentBook.key

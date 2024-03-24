@@ -19,6 +19,7 @@ import { googleTranslate } from "../../../utils/serviceUtils/googleTransUtil";
 import { getBingDict } from "../../../utils/serviceUtils/bingDictUtil";
 import { openExternalUrl } from "../../../utils/serviceUtils/urlUtil";
 import lemmatize from "wink-lemmatizer";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class PopupDict extends React.Component<PopupDictProps, PopupDictState> {
   constructor(props: PopupDictProps) {
@@ -55,9 +56,9 @@ class PopupDict extends React.Component<PopupDictProps, PopupDictState> {
     let bookLocation = RecordLocation.getHtmlLocation(bookKey);
     let chapter = bookLocation.chapterTitle;
     let word = new DictHistory(bookKey, text, chapter);
-    let dictHistoryArr = (await window.localforage.getItem("words")) || [];
+    let dictHistoryArr = (await gLocalForage.getItem("words")) || [];
     dictHistoryArr.push(word);
-    window.localforage.setItem("words", dictHistoryArr);
+    gLocalForage.setItem("words", dictHistoryArr);
   };
   handleDictText = (res: any) => {
     return (

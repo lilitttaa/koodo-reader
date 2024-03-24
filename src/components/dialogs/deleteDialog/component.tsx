@@ -13,6 +13,7 @@ import AddTrash from "../../../utils/readUtils/addTrash";
 import BookUtil from "../../../utils/fileUtils/bookUtil";
 import toast from "react-hot-toast";
 import StorageUtil from "../../../utils/serviceUtils/storageUtil";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class DeleteDialog extends React.Component<
   DeleteDialogProps,
@@ -35,19 +36,19 @@ class DeleteDialog extends React.Component<
       if (this.props.bookmarks) {
         let bookmarkArr = DeleteUtil.deleteBookmarks(this.props.bookmarks, key);
         if (bookmarkArr.length === 0) {
-          await window.localforage.removeItem("bookmarks");
+          await gLocalForage.removeItem("bookmarks");
         } else {
-          await window.localforage.setItem("bookmarks", bookmarkArr);
+          await gLocalForage.setItem("bookmarks", bookmarkArr);
         }
         this.props.handleFetchBookmarks();
       }
       if (this.props.notes) {
         let noteArr = DeleteUtil.deleteNotes(this.props.notes, key);
         if (noteArr.length === 0) {
-          await window.localforage.removeItem("notes");
+          await gLocalForage.removeItem("notes");
           resolve();
         } else {
-          await window.localforage.setItem("notes", noteArr);
+          await gLocalForage.setItem("notes", noteArr);
           resolve();
         }
         this.props.handleFetchNotes();
@@ -124,7 +125,7 @@ class DeleteDialog extends React.Component<
   deleteBook = (key: string) => {
     return new Promise<void>((resolve, reject) => {
       this.props.books &&
-        window.localforage
+        gLocalForage
           .setItem("books", DeleteUtil.deleteBook(this.props.books, key))
           .then(async () => {
             await BookUtil.deleteBook(key);

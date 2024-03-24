@@ -13,6 +13,7 @@ import { HtmlMouseEvent } from "../../../utils/serviceUtils/mouseEvent";
 import storageUtil from "../../../utils/serviceUtils/storageUtil";
 import BingTTSUtil from "../../../utils/serviceUtils/bingTTSUtil";
 import { isElectron } from "react-device-detect";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var document: any;
 declare var window: any;
 class OperationPanel extends React.Component<
@@ -162,7 +163,7 @@ class OperationPanel extends React.Component<
     let bookmarkArr = this.props.bookmarks;
     bookmarkArr.push(bookmark);
     this.props.handleBookmarks(bookmarkArr);
-    window.localforage.setItem("bookmarks", bookmarkArr);
+    gLocalForage.setItem("bookmarks", bookmarkArr);
     this.setState({ isBookmark: true });
     toast.success(this.props.t("Addition successful"));
     this.props.handleShowBookmark(true);

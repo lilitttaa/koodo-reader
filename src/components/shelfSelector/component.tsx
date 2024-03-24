@@ -7,6 +7,7 @@ import DeletePopup from "../dialogs/deletePopup";
 import { withRouter } from "react-router-dom";
 import { backup } from "../../utils/syncUtils/backupUtil";
 import { isElectron } from "react-device-detect";
+import { gLocalForage } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class ShelfSelector extends React.Component<
   ShelfSelectorProps,
@@ -66,7 +67,7 @@ class ShelfSelector extends React.Component<
   render() {
     if (isElectron) {
       //兼容之前的版本
-      window.localforage.getItem(this.props.books[0].key).then((result) => {
+      gLocalForage.getItem(this.props.books[0].key).then((result) => {
         if (result) {
           backup(
             this.props.books,

@@ -4,6 +4,7 @@ import { DeleteIconProps, DeleteIconStates } from "./interface";
 import TagUtil from "../../utils/readUtils/tagUtil";
 import DeletePopup from "../dialogs/deletePopup";
 import toast from "react-hot-toast";
+import { gLocalForage } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class DeleteIcon extends React.Component<DeleteIconProps, DeleteIconStates> {
   constructor(props: DeleteIconProps) {
@@ -34,7 +35,7 @@ class DeleteIcon extends React.Component<DeleteIconProps, DeleteIconStates> {
       if (item.key === this.props.itemKey) {
         deleteItems.splice(index, 1);
         if (deleteItems.length === 0) {
-          window.localforage
+          gLocalForage
             .removeItem(this.props.mode)
             .then(() => {
               deleteFunc();
@@ -44,7 +45,7 @@ class DeleteIcon extends React.Component<DeleteIconProps, DeleteIconStates> {
               console.log("删除失败");
             });
         } else {
-          window.localforage
+          gLocalForage
             .setItem(this.props.mode, deleteItems)
             .then(() => {
               deleteFunc();
@@ -64,7 +65,7 @@ class DeleteIcon extends React.Component<DeleteIconProps, DeleteIconStates> {
         tag: item.tag.filter((subitem) => subitem !== tagName),
       };
     });
-    window.localforage.setItem("notes", noteList).then(() => {
+    gLocalForage.setItem("notes", noteList).then(() => {
       this.props.handleFetchNotes();
     });
   };

@@ -16,6 +16,7 @@ import { getIframeDoc } from "../../../utils/serviceUtils/docUtil";
 import { openExternalUrl } from "../../../utils/serviceUtils/urlUtil";
 import { isElectron } from "react-device-detect";
 import { createOneNote } from "../../../utils/serviceUtils/noteUtil";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 
 declare var window: any;
 
@@ -113,7 +114,7 @@ class PopupOption extends React.Component<PopupOptionProps> {
     );
     let noteArr = this.props.notes;
     noteArr.push(digest);
-    window.localforage.setItem("notes", noteArr).then(() => {
+    gLocalForage.setItem("notes", noteArr).then(() => {
       this.props.handleOpenMenu(false);
       toast.success(this.props.t("Addition successful"));
       this.props.handleFetchNotes();

@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { Trans } from "react-i18next";
 import { checkStableUpdate } from "../../utils/commonUtil";
 import packageInfo from "../../../package.json";
+import { gLocalStorage } from '../../utils/fileUtils/fileAPIFactory';
 
 class Header extends React.Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
@@ -46,9 +47,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
       if (
         StorageUtil.getReaderConfig("storageLocation") &&
-        !localStorage.getItem("storageLocation")
+        !gLocalStorage.getItem("storageLocation")
       ) {
-        localStorage.setItem(
+        gLocalStorage.setItem(
           "storageLocation",
           StorageUtil.getReaderConfig("storageLocation")
         );
@@ -64,8 +65,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         console.log(error);
       }
       //Check for data update
-      let storageLocation = localStorage.getItem("storageLocation")
-        ? localStorage.getItem("storageLocation")
+      let storageLocation = gLocalStorage.getItem("storageLocation")
+        ? gLocalStorage.getItem("storageLocation")
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
@@ -82,9 +83,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         }
         const readerConfig = JSON.parse(data);
         if (
-          localStorage.getItem("lastSyncTime") &&
+          gLocalStorage.getItem("lastSyncTime") &&
           parseInt(readerConfig.lastSyncTime) >
-            parseInt(localStorage.getItem("lastSyncTime")!)
+            parseInt(gLocalStorage.getItem("lastSyncTime")!)
         ) {
           this.setState({ isdataChange: true });
         }
@@ -104,8 +105,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     const fs = window.require("fs");
     const path = window.require("path");
     const { zip } = window.require("zip-a-folder");
-    let storageLocation = localStorage.getItem("storageLocation")
-      ? localStorage.getItem("storageLocation")
+    let storageLocation = gLocalStorage.getItem("storageLocation")
+      ? gLocalStorage.getItem("storageLocation")
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
@@ -124,8 +125,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     if (result) {
       this.setState({ isdataChange: false });
       //Check for data update
-      let storageLocation = localStorage.getItem("storageLocation")
-        ? localStorage.getItem("storageLocation")
+      let storageLocation = gLocalStorage.getItem("storageLocation")
+        ? gLocalStorage.getItem("storageLocation")
         : window
             .require("electron")
             .ipcRenderer.sendSync("storage-location", "ping");
@@ -141,8 +142,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           return;
         }
         const readerConfig = JSON.parse(data);
-        if (localStorage.getItem("lastSyncTime") && readerConfig.lastSyncTime) {
-          localStorage.setItem("lastSyncTime", readerConfig.lastSyncTime);
+        if (gLocalStorage.getItem("lastSyncTime") && readerConfig.lastSyncTime) {
+          gLocalStorage.setItem("lastSyncTime", readerConfig.lastSyncTime);
         }
       });
     }
@@ -163,8 +164,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }
     const fs = window.require("fs");
     const path = window.require("path");
-    let storageLocation = localStorage.getItem("storageLocation")
-      ? localStorage.getItem("storageLocation")
+    let storageLocation = gLocalStorage.getItem("storageLocation")
+      ? gLocalStorage.getItem("storageLocation")
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
@@ -178,9 +179,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
       if (
         readerConfig &&
-        localStorage.getItem("lastSyncTime") &&
+        gLocalStorage.getItem("lastSyncTime") &&
         parseInt(readerConfig.lastSyncTime) >
-          parseInt(localStorage.getItem("lastSyncTime")!)
+          parseInt(gLocalStorage.getItem("lastSyncTime")!)
       ) {
         this.syncFromLocation();
       } else {
@@ -192,7 +193,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   syncToLocation = async () => {
     let timestamp = new Date().getTime().toString();
     StorageUtil.setReaderConfig("lastSyncTime", timestamp);
-    localStorage.setItem("lastSyncTime", timestamp);
+    gLocalStorage.setItem("lastSyncTime", timestamp);
     let result = await backup(
       this.props.books,
       this.props.notes,

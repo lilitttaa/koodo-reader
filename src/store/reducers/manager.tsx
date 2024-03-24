@@ -1,3 +1,5 @@
+import { gLocalStorage } from '../../utils/fileUtils/fileAPIFactory';
+
 const initState = {
   books: null,
   deletedBooks: [],
@@ -5,7 +7,7 @@ const initState = {
   isSearch: false,
   isOpenFeedbackDialog: false,
   isAboutOpen: false,
-  isBookSort: localStorage.getItem("bookSortCode") ? true : false,
+  isBookSort: gLocalStorage.getItem("bookSortCode") ? true : false,
   isNoteSort: false,
   isSettingOpen: false,
   viewMode: "card",

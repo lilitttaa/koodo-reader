@@ -20,6 +20,7 @@ import { themeList } from "../../../constants/themeList";
 import toast from "react-hot-toast";
 import { openExternalUrl } from "../../../utils/serviceUtils/urlUtil";
 import ManagerUtil from "../../../utils/fileUtils/managerUtil";
+import { gLocalStorage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 class SettingDialog extends React.Component<
   SettingInfoProps,
@@ -58,8 +59,8 @@ class SettingDialog extends React.Component<
         name: StorageUtil.getReaderConfig("themeColor"),
       }),
       storageLocation: isElectron
-        ? localStorage.getItem("storageLocation")
-          ? localStorage.getItem("storageLocation")
+        ? gLocalStorage.getItem("storageLocation")
+          ? gLocalStorage.getItem("storageLocation")
           : window
               .require("electron")
               .ipcRenderer.sendSync("storage-location", "ping")
@@ -146,8 +147,8 @@ class SettingDialog extends React.Component<
     const fs = window.require("fs");
     const path = window.require("path");
     const { zip } = window.require("zip-a-folder");
-    let storageLocation = localStorage.getItem("storageLocation")
-      ? localStorage.getItem("storageLocation")
+    let storageLocation = gLocalStorage.getItem("storageLocation")
+      ? gLocalStorage.getItem("storageLocation")
       : window
           .require("electron")
           .ipcRenderer.sendSync("storage-location", "ping");
@@ -177,8 +178,8 @@ class SettingDialog extends React.Component<
       return;
     }
     let result = await changePath(
-      localStorage.getItem("storageLocation")
-        ? localStorage.getItem("storageLocation")
+      gLocalStorage.getItem("storageLocation")
+        ? gLocalStorage.getItem("storageLocation")
         : ipcRenderer.sendSync("storage-location", "ping"),
       path.filePaths[0]
     );
@@ -190,13 +191,13 @@ class SettingDialog extends React.Component<
     } else {
       toast.error(this.props.t("Change failed"));
     }
-    localStorage.setItem("storageLocation", path.filePaths[0]);
+    gLocalStorage.setItem("storageLocation", path.filePaths[0]);
     this.setState({ storageLocation: path.filePaths[0] });
     document.getElementsByClassName(
       "setting-dialog-location-title"
     )[0].innerHTML =
       path.filePaths[0] ||
-      localStorage.getItem("storageLocation") ||
+      gLocalStorage.getItem("storageLocation") ||
       ipcRenderer.sendSync("storage-location", "ping");
   };
 

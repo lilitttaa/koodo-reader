@@ -12,6 +12,7 @@ import Viewer from "../../containers/htmlViewer";
 
 import RecordLocation from "../../utils/readUtils/recordLocation";
 import "./index.css";
+import { gLocalForage, gLocalStorage } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 
 let lock = false; //prevent from clicking too fasts
@@ -57,7 +58,7 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
     let lastIndexOfSlash = url.lastIndexOf("/", firstIndexOfQuestion);
     let key = url.substring(lastIndexOfSlash + 1, firstIndexOfQuestion);
     this.props.handleFetchBooks();
-    window.localforage.getItem("books").then((result: any) => {
+    gLocalForage.getItem("books").then((result: any) => {
       let book;
       //兼容在主窗口打开
       if (this.props.currentBook.key) {
@@ -65,7 +66,7 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
       } else {
         book =
           result[window._.findIndex(result, { key })] ||
-          JSON.parse(localStorage.getItem("tempBook") || "{}");
+          JSON.parse(gLocalStorage.getItem("tempBook") || "{}");
       }
       this.props.handleReadingBook(book);
       this.props.handleFetchPercentage(book);

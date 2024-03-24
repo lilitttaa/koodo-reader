@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import StorageUtil from "../../utils/serviceUtils/storageUtil";
 
 import ShelfUtil from "../../utils/readUtils/shelfUtil";
+import { gLocalForage, gLocalStorage } from '../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 let clickFilePath = "";
 
@@ -30,8 +31,8 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
   componentDidMount() {
     if (isElectron) {
       const { ipcRenderer } = window.require("electron");
-      if (!localStorage.getItem("storageLocation")) {
-        localStorage.setItem(
+      if (!gLocalStorage.getItem("storageLocation")) {
+        gLocalStorage.setItem(
           "storageLocation",
           ipcRenderer.sendSync("storage-location", "ping")
         );
@@ -86,7 +87,7 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
       BookUtil.RedirectBook(book, this.props.t, this.props.history);
       this.props.handleReadingBook(book);
     } else {
-      localStorage.setItem("tempBook", JSON.stringify(book));
+      gLocalStorage.setItem("tempBook", JSON.stringify(book));
       BookUtil.RedirectBook(book, this.props.t, this.props.history);
       this.props.history.push("/manager/home");
     }
@@ -116,7 +117,7 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
       bookArr.push(book);
       this.props.handleReadingBook(book);
       RecordRecent.setRecent(book.key);
-      window.localforage
+      gLocalForage
         .setItem("books", bookArr)
         .then(() => {
           this.props.handleFetchBooks();

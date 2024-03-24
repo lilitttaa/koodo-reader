@@ -1,6 +1,6 @@
 import FileAPIInterface from './fileAPIInterface'
 
-export class LocalStorageAPI implements FileAPIInterface {
+export class gLocalStorageAPI implements FileAPIInterface {
 	setItem (key: string, value: any): Promise<void> {
 	  return new Promise(resolve => {
 		localStorage.setItem(key, value)

@@ -19,6 +19,7 @@ import {
   removeOneNote,
 } from "../../../utils/serviceUtils/noteUtil";
 import { classes } from "../../../constants/themeList";
+import { gLocalForage } from '../../../utils/fileUtils/fileAPIFactory';
 declare var window: any;
 
 class PopupNote extends React.Component<PopupNoteProps, PopupNoteState> {
@@ -85,7 +86,7 @@ class PopupNote extends React.Component<PopupNoteProps, PopupNoteState> {
           item.cfi = cfi;
         }
       });
-      window.localforage.setItem("notes", this.props.notes).then(() => {
+      gLocalForage.setItem("notes", this.props.notes).then(() => {
         this.props.handleOpenMenu(false);
         toast.success(this.props.t("Addition successful"));
         this.props.handleFetchNotes();
@@ -136,7 +137,7 @@ class PopupNote extends React.Component<PopupNoteProps, PopupNoteState> {
 
       let noteArr = this.props.notes;
       noteArr.push(note);
-      window.localforage.setItem("notes", noteArr).then(() => {
+      gLocalForage.setItem("notes", noteArr).then(() => {
         this.props.handleOpenMenu(false);
         toast.success(this.props.t("Addition successful"));
         this.props.handleFetchNotes();
@@ -161,7 +162,7 @@ class PopupNote extends React.Component<PopupNoteProps, PopupNoteState> {
       });
       if (noteIndex > -1) {
         this.props.notes.splice(noteIndex, 1);
-        window.localforage.setItem("notes", this.props.notes).then(() => {
+        gLocalForage.setItem("notes", this.props.notes).then(() => {
           if (this.props.currentBook.format === "PDF") {
             removePDFHighlight(
               JSON.parse(note.range),

@@ -3163,7 +3163,7 @@
             localStorage.setItem("pdfPath", "");
             PDFViewerApplication.open(new Uint8Array(data).buffer);
           } else {
-            (localforage || window.localforage)
+            (localforage || gLocalForage)
               .getItem(file)
               .then(function (result) {
                 PDFViewerApplication.open(result);
