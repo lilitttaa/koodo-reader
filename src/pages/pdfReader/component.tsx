@@ -70,7 +70,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       pdfMouseEvent();
       doc.document.addEventListener("click", async (event: any) => {
         event.preventDefault();
-        await handleLinkJump(event);
+        // await handleLinkJump(event);
       });
       doc.document.addEventListener("mouseup", (event) => {
         if (this.state.isDisablePopup) return;

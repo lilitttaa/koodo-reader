@@ -179,9 +179,9 @@ class PopupTrans extends React.Component<PopupTransProps, PopupTransState> {
             </div>
           </div>
           <div className="trans-box">
-            <div className="original-text-box">
+            {/* <div className="original-text-box">
               <div className="original-text">{this.state.originalText}</div>
-            </div>
+            </div> */}
             <div className="trans-text-box">
               <div className="trans-text">{this.state.translatedText}</div>
             </div>
